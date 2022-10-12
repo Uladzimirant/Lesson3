@@ -1,1 +1,2 @@
-# Lesson3
+# Console calculator
+Uses reverse polish notation
