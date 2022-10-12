@@ -143,7 +143,7 @@ namespace Lesson3
                             }
                         } catch (InvalidOperationException)
                         {
-                            throw new ArgumentException("Expression not valid: parenthesis mismatch");
+                            throw new ExpectedException("Expression not valid: parenthesis mismatch");
                         }
                         break;
                     case RPNType.OPERAND:
@@ -155,7 +155,7 @@ namespace Lesson3
             }
             while(operatorStack.TryPop(out string op))
             {
-                if (op == "(") throw new ArgumentException("Expression not valid: parenthesis mismatch");
+                if (op == "(") throw new ExpectedException("Expression not valid: parenthesis mismatch");
                 output.Enqueue(op);
             }
             return output;
