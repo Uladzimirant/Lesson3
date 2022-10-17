@@ -1,2 +1,2 @@
 # Console calculator
-Uses reverse polish notation
+With complex expressions
