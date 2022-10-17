@@ -33,7 +33,7 @@ namespace Lesson3
         }
     }
     public class Program
-    {
+    { 
         //list of operators and functions, their info and lambdas
         static Dictionary<string, OpInfo> opInfo = new Dictionary<string, OpInfo>()
         {
@@ -101,7 +101,7 @@ namespace Lesson3
             //For conventer
             expression = expression.Replace(".", ",");
             //To differentiate between unary and binary minus, we will replace unary minus with regex
-            expression = Regex.Replace(expression, $"(?<=[({operators}])-", "_");
+            expression = Regex.Replace(expression, $"(?<=[({operators}]|^)-", "_");
             //Regex Split, because String.Split() don't include separators
             var tokens = Regex.Split(expression, 
                 $"([(){operators}]|{String.Join("|",functions.Select(e=>$"(?:{e})"))})" //Looks like this ([\\+\\-\\*\\/]|(?:f1)|(?:f2))
@@ -213,15 +213,22 @@ namespace Lesson3
                 " history [n] - get last n operations (default 5)\n"
                 ) ;
         }
-        static List<string> historyList = new List<string>();
 
-        public static void History(int amount = 5)
+
+        //This and history queue should be in class, but we didn't learn them yet 
+        static int maxHistory = 10;
+        static Queue<string> history = new Queue<string>();
+        public static void AddToHistory(string e)
         {
-            if (amount < 1) throw new ExpectedException("Amount of elements in history must be positive");
+            history.Enqueue(e);
+            if (history.Count > maxHistory) history.Dequeue();
+        }
+        public static void History()
+        {
             Console.WriteLine("History:");
-            for (int i = Math.Max(historyList.Count - amount, 0); i < historyList.Count; i++)
+            foreach (var item in history)
             {
-                Console.WriteLine(historyList[i]);
+                Console.WriteLine(item);
             }
         }
         public static void Main(string[] args)
@@ -245,20 +252,12 @@ namespace Lesson3
                             Help();
                             break;
                         case "history":
-                            if (command.Length > 1)
-                            {
-                                try
-                                {
-                                    History(Convert.ToInt32(command[1]));
-                                }
-                                catch (FormatException) { throw new ExpectedException("History accepts integer number as argument"); }
-                            }
-                            else History();
+                            History();
                             break;
                         default:
                             double result = calculateRPN(ToRPN(fullLine));
                             Console.WriteLine(result);
-                            historyList.Add($"{fullLine.Replace(" ", "")}={result}");
+                            AddToHistory($"{fullLine.Replace(" ", "")}={result}");
                             break;
                     }
                 }
